@@ -324,16 +324,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyB2EI6WYngUHdmhKdxtm33L0zs-96970d8",
-            authDomain: "carpool2telia0.firebaseapp.com",
-            projectId: "carpool2telia0",
-            storageBucket: "carpool2telia0.firebasestorage.app",
-            messagingSenderId: "557496955839",
-            appId: "1:557496955839:web:6f2728d4f5784cf4cd270a"
-        };
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+        import { firebaseConfig } from "./config.js";
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -371,11 +363,9 @@
                 });
             }
 
-            // Γενικά Στατιστικά: Υπολογίζονται ΜΟΝΟ όταν δεν υπάρχει απουσία (δηλαδή όταν είναι πλήρης η ομάδα)
             const counts = { 'Δέσποινα': 0, 'Δημήτρης': 0, 'Θανάσης': 0 };
             records.forEach(r => {
                 const absents = [r.absent1, r.absent2].filter(Boolean);
-                // Αν δεν λείπει κανείς, προσμετράται στον κεντρικό μετρητή
                 if (absents.length === 0) {
                     if (counts[r.driver] !== undefined) {
                         counts[r.driver]++;
@@ -390,7 +380,6 @@
                 </div>
             `).join('');
 
-            // Στατιστικά Ζευγαριών (όταν λείπει ακριβώς ένας)
             const pairCounts = {
                 'Λείπει Δέσποινα': { 'Δημήτρης': 0, 'Θανάσης': 0 },
                 'Λείπει Δημήτρης': { 'Δέσποινα': 0, 'Θανάσης': 0 },
@@ -421,7 +410,6 @@
             pairsContainer.innerHTML = pairsHtml;
         }
 
-        // Realtime ακρόαση δεδομένων από Firestore
         const q = query(collection(db, "car_records"), orderBy("date", "desc"));
         onSnapshot(q, (snapshot) => {
             records = [];
@@ -431,9 +419,8 @@
             updateUI();
         });
 
-        // Διαγραφή εγγραφής με κωδικό '666'
         window.deleteRecord = async function(id) {
-            const password = prompt('Εισάγετε τον κωδικό (666) για διαγραφή:');
+            const password = prompt('Εισάγετε τον κωδικό για διαγραφή:');
             if (password === null) return;
             
             if (password === '666') {
@@ -448,11 +435,10 @@
             }
         }
 
-        // Υποβολή φόρμας με προστασία κωδικού '666'
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const password = prompt('Εισάγετε τον κωδικό (666) για καταχώρηση:');
+            const password = prompt('Εισάγετε τον κωδικό για καταχώρηση:');
             if (password === null) return;
 
             if (password !== '666') {
