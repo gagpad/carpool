@@ -330,7 +330,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        document.getElementById('date').valueAsDate = new Date();
+        // Ορισμός σημερινής ημερομηνίας με ασφάλεια
+        const dateInput = document.getElementById('date');
+        if (dateInput) {
+            dateInput.valueAsDate = new Date();
+        }
 
         const form = document.getElementById('carForm');
         const statsContainer = document.getElementById('statsContainer');
@@ -417,6 +421,8 @@
                 records.push({ id: docSnap.id, ...docSnap.data() });
             });
             updateUI();
+        }, (error) => {
+            console.error("Σφάλμα ανάκτησης δεδομένων:", error);
         });
 
         window.deleteRecord = async function(id) {
@@ -471,7 +477,9 @@
                 document.getElementById('absent1').value = '';
                 document.getElementById('absent2').value = '';
                 document.getElementById('comment').value = '';
-                document.getElementById('date').valueAsDate = new Date();
+                if (dateInput) {
+                    dateInput.valueAsDate = new Date();
+                }
                 alert('Η καταγραφή έγινε με επιτυχία!');
             } catch (error) {
                 alert('Σφάλμα αποθήκευσης: ' + error);
