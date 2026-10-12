@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Tracker | Διαχείριση Οδηγών</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --accent: #f8fafc;
+            --border: #e2e8f0;
+            --radius: 14px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 28px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0 0 6px 0;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        select, input[type="date"], input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--accent);
+            color: var(--text-main);
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-top: 6px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 24px 0;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--accent);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+        }
+
+        .stat-card .name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stat-card .count {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .pairs-section {
+            background: var(--accent);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .pairs-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .pair-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 4px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .pair-item:last-child {
+            border-bottom: none;
+        }
+
+        .pair-item strong {
+            color: var(--text-main);
+        }
+
+        .history-container {
+            max-height: 160px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--accent);
+        }
+
+        .history-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-comment {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="card">
+            <div class="header">
+                <h1>Car Tracker</h1>
+                <p>Καταγραφή και στατιστικά οδήγησης</p>
+            </div>
+            
+            <form id="carForm">
+                <div class="form-group">
+                    <label for="date">Ημερομηνία</label>
+                    <input type="date" id="date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="driver">Οδηγός (Κύριος)</label>
+                    <select id="driver" required>
+                        <option value="">Επιλέξτε οδηγό...</option>
+                        <option value="Δέσποινα">Δέσποινα</option>
+                        <option value="Δημήτρης">Δημήτρης</option>
+                        <option value="Θανάσης">Θανάσης</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="absent1">Απόντες (1ος που έλειπε - Προαιρετικό)</label>
+                    <select id="absent1">
+                        <option value="">Κανείς / Όλοι παρόντες</option>
+                        <option value="Δέσποινα">Δέσποινα</option>
+                        <option value="Δημήτρης">Δημήτρης</option>
+                        <option value="Θανάσης">Θανάσης</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="absent2">Απόντες (2ος που έλειπε - Προαιρετικό)</label>
+                    <select id="absent2">
+                        <option value="">Κανείς</option>
+                        <option value="Δέσποινα">Δέσποινα</option>
+                        <option value="Δημήτρης">Δημήτρης</option>
+                        <option value="Θανάσης">Θανάσης</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="comment">Σχόλιο / Διαδρομή (Προαιρετικό)</label>
+                    <input type="text" id="comment" placeholder="π.χ. Δουλειά, Σούπερ μάρκετ">
+                </div>
+
+                <button type="submit" class="btn-submit">Καταγραφή</button>
+            </form>
+
+            <div class="divider"></div>
+
+            <div class="stats-section">
+                <div class="section-title"><span>📊 Στατιστικά</span></div>
+                <div class="stats-grid" id="statsContainer">
+                    <!-- Dinamically filled -->
+                </div>
+
+                <div class="pairs-section">
+                    <div class="pairs-title">👥 Στατιστικά ανά Ζευγάρια (Όταν λείπει ένας)</div>
+                    <div id="pairsContainer">
+                        <!-- Dinamically filled -->
+                    </div>
+                </div>
+
+                <div class="section-title" style="margin-top: 16px;"><span>📜 Ιστορικό</span></div>
+                <div class="history-container" id="historyContainer">
+                    <div class="empty-state">Φόρτωση δεδομένων...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2EI6WYngUHdmhKdxtm33L0zs-96970d8",
+            authDomain: "carpool2telia0.firebaseapp.com",
+            projectId: "carpool2telia0",
+            storageBucket: "carpool2telia0.firebasestorage.app",
+            messagingSenderId: "557496955839",
+            appId: "1:557496955839:web:6f2728d4f5784cf4cd270a"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.getElementById('date').valueAsDate = new Date();
+
+        const form = document.getElementById('carForm');
+        const statsContainer = document.getElementById('statsContainer');
+        const pairsContainer = document.getElementById('pairsContainer');
+        const historyContainer = document.getElementById('historyContainer');
+
+        let records = [];
+
+        function updateUI() {
+            if (records.length === 0) {
+                historyContainer.innerHTML = '<div class="empty-state">Δεν υπάρχουν καταχωρήσεις</div>';
+            } else {
+                let html = '';
+                records.forEach((r) => {
+                    let absentText = (r.absent1 || r.absent2) ? ` (Απόντες: ${[r.absent1, r.absent2].filter(Boolean).join(', ')})` : '';
+                    html += `
+                        <div class="history-item">
+                            <div>
+                                <strong>${r.driver}</strong>${absentText}
+                                <div class="history-comment">${r.comment || 'Χωρίς σχόλιο'} - <span style="color: var(--text-muted);">${r.date}</span></div>
+                            </div>
+                            <button class="btn-delete" data-id="${r.id}" title="Διαγραφή">✕</button>
+                        </div>
+                    `;
+                });
+                historyContainer.innerHTML = html;
+
+                document.querySelectorAll('.btn-delete').forEach(btn => {
+                    btn.addEventListener('click', () => deleteRecord(btn.getAttribute('data-id')));
+                });
+            }
+
+            // Γενικά Στατιστικά: Υπολογίζονται ΜΟΝΟ όταν δεν υπάρχει απουσία (δηλαδή όταν είναι πλήρης η ομάδα)
+            const counts = { 'Δέσποινα': 0, 'Δημήτρης': 0, 'Θανάσης': 0 };
+            records.forEach(r => {
+                const absents = [r.absent1, r.absent2].filter(Boolean);
+                // Αν δεν λείπει κανείς, προσμετράται στον κεντρικό μετρητή
+                if (absents.length === 0) {
+                    if (counts[r.driver] !== undefined) {
+                        counts[r.driver]++;
+                    }
+                }
+            });
+
+            statsContainer.innerHTML = Object.entries(counts).map(([driver, count]) => `
+                <div class="stat-card">
+                    <div class="name">${driver}</div>
+                    <div class="count">${count}</div>
+                </div>
+            `).join('');
+
+            // Στατιστικά Ζευγαριών (όταν λείπει ακριβώς ένας)
+            const pairCounts = {
+                'Λείπει Δέσποινα': { 'Δημήτρης': 0, 'Θανάσης': 0 },
+                'Λείπει Δημήτρης': { 'Δέσποινα': 0, 'Θανάσης': 0 },
+                'Λείπει Θανάσης': { 'Δέσποινα': 0, 'Δημήτρης': 0 }
+            };
+
+            records.forEach(r => {
+                const absents = [r.absent1, r.absent2].filter(Boolean);
+                if (absents.length === 1) {
+                    const missing = absents[0];
+                    const key = `Λείπει ${missing}`;
+                    if (pairCounts[key] && pairCounts[key][r.driver] !== undefined) {
+                        pairCounts[key][r.driver]++;
+                    }
+                }
+            });
+
+            let pairsHtml = '';
+            for (let [missingKey, drivers] of Object.entries(pairCounts)) {
+                let entries = Object.entries(drivers);
+                pairsHtml += `
+                    <div class="pair-item">
+                        <span><strong>${missingKey}:</strong></span>
+                        <span>${entries[0][0]}: <strong>${entries[0][1]}</strong> | ${entries[1][0]}: <strong>${entries[1][1]}</strong></span>
+                    </div>
+                `;
+            }
+            pairsContainer.innerHTML = pairsHtml;
+        }
+
+        // Realtime ακρόαση δεδομένων από Firestore
+        const q = query(collection(db, "car_records"), orderBy("date", "desc"));
+        onSnapshot(q, (snapshot) => {
+            records = [];
+            snapshot.forEach((docSnap) => {
+                records.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            updateUI();
+        });
+
+        // Διαγραφή εγγραφής με κωδικό '666'
+        window.deleteRecord = async function(id) {
+            const password = prompt('Εισάγετε τον κωδικό (666) για διαγραφή:');
+            if (password === null) return;
+            
+            if (password === '666') {
+                try {
+                    await deleteDoc(doc(db, "car_records", id));
+                    alert('Η καταγραφή διαγράφηκε επιτυχώς.');
+                } catch (error) {
+                    alert('Σφάλμα κατά τη διαγραφή: ' + error);
+                }
+            } else {
+                alert('Λάθος κωδικός!');
+            }
+        }
+
+        // Υποβολή φόρμας με προστασία κωδικού '666'
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const password = prompt('Εισάγετε τον κωδικό (666) για καταχώρηση:');
+            if (password === null) return;
+
+            if (password !== '666') {
+                alert('Λάθος κωδικός! Η καταγραφή ακυρώθηκε.');
+                return;
+            }
+
+            const date = document.getElementById('date').value;
+            const driver = document.getElementById('driver').value;
+            const absent1 = document.getElementById('absent1').value;
+            const absent2 = document.getElementById('absent2').value;
+            const comment = document.getElementById('comment').value;
+
+            if (absent1 === driver || absent2 === driver || (absent1 && absent1 === absent2)) {
+                alert('Σφάλμα: Ο οδηγός δεν μπορεί να είναι ταυτόχρονα και απόντας, ούτε οι απόντες να είναι ίδιοι!');
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "car_records"), {
+                    date: date,
+                    driver: driver,
+                    absent1: absent1,
+                    absent2: absent2,
+                    comment: comment,
+                    createdAt: serverTimestamp()
+                });
+
+                document.getElementById('driver').value = '';
+                document.getElementById('absent1').value = '';
+                document.getElementById('absent2').value = '';
+                document.getElementById('comment').value = '';
+                document.getElementById('date').valueAsDate = new Date();
+                alert('Η καταγραφή έγινε με επιτυχία!');
+            } catch (error) {
+                alert('Σφάλμα αποθήκευσης: ' + error);
+            }
+        });
+    </script>
+</body>
+</html>
